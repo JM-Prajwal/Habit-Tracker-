@@ -48,6 +48,9 @@
         .sticky-col-header { position: sticky; left: 0; background-color: #FAF9F6; z-index: 20; border-right: 1px solid #EBEAE0; }
         
         .col-active { background-color: #F4F4EE !important; }
+        
+        /* Smooth SVG animation for progress rings */
+        circle { transition: stroke-dashoffset 1s ease-out; }
     </style>
 </head>
 <body class="p-4 md:p-6 min-h-screen flex flex-col">
@@ -262,7 +265,9 @@
             monthHabits.sort((a, b) => a.name.localeCompare(b.name));
 
             const header = document.getElementById('grid-header');
-            let headerHTML = `<tr><th class="sticky-col-header p-4 text-left min-w-[220px] shadow-sm z-30">Routines</th>`;
+            
+            // Adjusted min-width for the habit name column header
+            let headerHTML = `<tr><th class="sticky-col-header p-4 text-left min-w-[200px] shadow-sm z-30">Routines</th>`;
             for(let d = 1; d <= daysInMonth; d++) {
                 const colDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const isSelected = colDateStr === selectedDateStr;
@@ -288,11 +293,13 @@
                 let monthlyCompletions = 0;
                 bodyHTML += `<tr class="hover:bg-cream-50 transition-colors group">`;
                 
-                // sticky col with Edit & Delete options
+                // Adjusted text wrapping classes so long names display fully
                 bodyHTML += `
                     <td class="sticky-col p-3 text-left flex justify-between items-center bg-white group-hover:bg-cream-50 transition-colors z-20">
-                        <span class="font-medium text-forest-800 text-sm truncate w-32 md:w-36" title="${habit.name}">${habit.name}</span>
-                        <div class="opacity-0 group-hover:opacity-100 flex gap-1 transition-all bg-white group-hover:bg-cream-50 rounded pl-2">
+                        <span class="font-medium text-forest-800 text-sm min-w-[140px] max-w-[200px] whitespace-normal break-words leading-tight pr-2">
+                            ${habit.name}
+                        </span>
+                        <div class="opacity-0 group-hover:opacity-100 flex flex-col sm:flex-row gap-1 transition-all bg-white group-hover:bg-cream-50 rounded shrink-0">
                             <button class="edit-habit-btn text-sage-300 hover:text-sage-500 p-1.5 transition-colors" data-id="${habit.id}" data-name="${habit.name}" title="Rename Routine">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                             </button>
@@ -319,10 +326,23 @@
                         </td>`;
                 }
 
+                // Dynamic SVG Progress Ring Logic
                 let percentage = Math.round((monthlyCompletions / daysInMonth) * 100);
+                const radius = 16;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (percentage / 100) * circumference;
+                
                 bodyHTML += `
-                    <td class="p-2 font-bold ${percentage === 100 ? 'text-sage-500' : 'text-forest-800'}">
-                        ${monthlyCompletions} <span class="text-xs font-normal text-sage-400 block">${percentage}%</span>
+                    <td class="p-2 align-middle">
+                        <div class="relative w-10 h-10 flex items-center justify-center mx-auto" title="${monthlyCompletions} completions">
+                            <svg class="w-10 h-10 transform -rotate-90">
+                                <circle cx="20" cy="20" r="${radius}" stroke="currentColor" stroke-width="3" fill="transparent" class="text-cream-200" />
+                                <circle cx="20" cy="20" r="${radius}" stroke="currentColor" stroke-width="3" fill="transparent" 
+                                    class="${percentage === 100 ? 'text-sage-500' : 'text-sage-400'}" 
+                                    stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round" />
+                            </svg>
+                            <span class="absolute text-[10px] font-bold ${percentage === 100 ? 'text-sage-500' : 'text-forest-800'}">${percentage}%</span>
+                        </div>
                     </td></tr>`;
             });
             
@@ -331,7 +351,7 @@
             attachGridListeners();
         }
 
-        // --- RENDER RIGHT PANEL (DAILY FOCUS) ---
+          // --- RENDER RIGHT PANEL (DAILY FOCUS) ---
         window.selectDate = function(dateStr) {
             selectedDateStr = dateStr;
             const parts = dateStr.split('-');
@@ -409,8 +429,8 @@
                         data-id="${task.id}" data-done="${task.completed}">
                         ${task.completed ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
                     </button>
-                    <span class="flex-1 text-sm ${task.completed ? 'line-through text-sage-400' : 'text-forest-800'}">${task.text}</span>
-                    <button class="task-delete text-cream-200 hover:text-red-400 transition-colors p-1" data-id="${task.id}">
+                    <span class="flex-1 text-sm ${task.completed ? 'line-through text-sage-400' : 'text-forest-800'} break-words">${task.text}</span>
+                    <button class="task-delete text-cream-200 hover:text-red-400 transition-colors p-1 shrink-0" data-id="${task.id}">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 `;
