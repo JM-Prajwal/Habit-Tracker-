@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Habit & Task Dashboard</title>
+    <title>Consistency Workspace</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,33 +40,37 @@
         body { background-color: #F4F4EE; color: #2C3B29; -webkit-font-smoothing: antialiased; }
         .hide { display: none !important; }
         
-        /* Grid Scrollbar */
-        .grid-scroll::-webkit-scrollbar { height: 8px; }
+        .grid-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .grid-scroll::-webkit-scrollbar-track { background: #EBEAE0; border-radius: 4px; }
         .grid-scroll::-webkit-scrollbar-thumb { background: #B9C5B4; border-radius: 4px; }
         
-        /* Sticky Columns */
         .sticky-col { position: sticky; left: 0; background-color: white; z-index: 10; border-right: 1px solid #EBEAE0; }
         .sticky-col-header { position: sticky; left: 0; background-color: #FAF9F6; z-index: 20; border-right: 1px solid #EBEAE0; }
         
-        /* Active Column Highlight */
         .col-active { background-color: #F4F4EE !important; }
     </style>
 </head>
 <body class="p-4 md:p-6 min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4 w-full max-w-[1400px] mx-auto">
-        <div>
-            <h1 class="text-3xl font-serif font-bold text-forest-900 tracking-tight">Consistency Workspace</h1>
-            <p class="text-sm text-sage-500">Design your months, win your days.</p>
-        </div>
-        
-        <!-- Month Navigation -->
-        <div class="flex items-center gap-4 bg-white px-4 py-2 rounded-2xl border border-cream-200 shadow-sm">
-            <button id="prev-month" class="p-1 text-sage-500 hover:text-forest-800 transition-colors"><i data-lucide="chevron-left"></i></button>
-            <h2 id="month-display" class="text-lg font-bold w-36 text-center text-forest-800">October 2026</h2>
-            <button id="next-month" class="p-1 text-sage-500 hover:text-forest-800 transition-colors"><i data-lucide="chevron-right"></i></button>
+    <!-- Graphic Header -->
+    <header class="w-full max-w-[1400px] mx-auto mb-6">
+        <div class="relative bg-white rounded-3xl border border-cream-200 shadow-sm p-6 md:p-8 overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <div class="relative z-10 w-full md:w-auto text-center md:text-left">
+                <p id="greeting-display" class="text-xs font-bold tracking-widest text-sage-500 uppercase mb-1">Good Morning</p>
+                <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 tracking-tight mb-2">Consistency Workspace</h1>
+                <p class="text-sm text-sage-500">Log your routines, execute the checklist, trust the process.</p>
+            </div>
+            
+            <!-- Month Navigation in Header -->
+            <div class="relative z-10 flex items-center gap-4 bg-cream-50 px-5 py-3 rounded-2xl border border-cream-200 shadow-inner">
+                <button id="prev-month" class="p-1 text-sage-500 hover:text-forest-800 transition-colors"><i data-lucide="chevron-left"></i></button>
+                <h2 id="month-display" class="text-lg font-bold w-36 text-center text-forest-800">October 2026</h2>
+                <button id="next-month" class="p-1 text-sage-500 hover:text-forest-800 transition-colors"><i data-lucide="chevron-right"></i></button>
+            </div>
+
+            <!-- Background Graphic -->
+            <i data-lucide="plane-takeoff" class="absolute -right-4 -bottom-8 text-sage-300 opacity-10 w-64 h-64 pointer-events-none transform -rotate-12"></i>
         </div>
     </header>
 
@@ -74,12 +78,12 @@
     <div class="flex flex-col xl:flex-row gap-6 w-full max-w-[1400px] mx-auto flex-1 overflow-hidden">
         
         <!-- LEFT PANEL: The Monthly Spreadsheet -->
-        <div class="flex-1 flex flex-col bg-white rounded-3xl border border-cream-200 shadow-sm overflow-hidden h-full">
-            <div class="p-5 border-b border-cream-200 flex justify-between items-center bg-cream-50/50">
+        <div class="flex-1 flex flex-col bg-white rounded-3xl border border-cream-200 shadow-sm overflow-hidden h-full relative">
+            <div class="p-5 border-b border-cream-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-cream-50/50">
                 <h3 class="font-serif font-bold text-xl text-forest-900">Monthly Routines</h3>
-                <div class="flex gap-2">
-                    <input type="text" id="new-habit-input" placeholder="Add a habit to this month..." class="w-48 md:w-64 bg-white border border-cream-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-sage-400">
-                    <button id="btn-add-habit" class="bg-sage-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-sage-500 transition-colors shadow-sm">Add</button>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <input type="text" id="new-habit-input" placeholder="Add a routine..." class="flex-1 sm:w-64 bg-white border border-cream-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-sage-400 shadow-sm">
+                    <button id="btn-add-habit" class="bg-sage-400 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-sage-500 transition-colors shadow-sm">Add</button>
                 </div>
             </div>
 
@@ -92,35 +96,37 @@
                         <!-- JS generated habits -->
                     </tbody>
                 </table>
-                <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 z-30">
+                
+                <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-30">
                     <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sage-400 mb-2"></i>
-                    <p class="text-sage-500 text-sm">Loading workspace...</p>
+                    <p class="text-sage-500 text-sm">Loading telemetry...</p>
                 </div>
                 
-                <!-- Empty State for Month -->
-                <div id="empty-month-state" class="hide absolute inset-0 flex flex-col items-center justify-center bg-white z-20">
-                    <i data-lucide="calendar-plus" class="w-12 h-12 text-sage-300 mb-4"></i>
-                    <p class="text-forest-800 font-medium mb-2">No routines set for this month.</p>
-                    <button id="btn-copy-prev-month" class="text-sm bg-cream-100 hover:bg-cream-200 text-forest-800 px-4 py-2 rounded-xl transition-colors border border-cream-200">
-                        Import routines from last month
+                <!-- Empty State -->
+                <div id="empty-month-state" class="hide absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-6 text-center">
+                    <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mb-4">
+                        <i data-lucide="clipboard-list" class="w-10 h-10 text-sage-400"></i>
+                    </div>
+                    <p class="text-forest-800 font-medium text-lg mb-2">No routines logged for this month.</p>
+                    <button id="btn-copy-prev-month" class="mt-2 text-sm bg-sage-400 hover:bg-sage-500 text-white px-5 py-3 rounded-xl transition-colors shadow-sm font-medium">
+                        Import Previous Month
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT PANEL: Daily Focus (To-Do & Summary) -->
+        <!-- RIGHT PANEL: Daily Focus -->
         <div class="w-full xl:w-[400px] flex flex-col gap-6 shrink-0">
             
-            <div class="bg-white rounded-3xl border border-cream-200 shadow-sm p-6 flex flex-col h-full">
-                <!-- Daily Header -->
-                <div class="mb-6">
+            <div class="bg-white rounded-3xl border border-cream-200 shadow-sm p-6 flex flex-col h-full relative overflow-hidden">
+                <div class="mb-6 relative z-10">
                     <p class="text-xs font-bold tracking-widest text-sage-500 uppercase mb-1">Daily Focus</p>
                     <h3 id="focus-date-display" class="font-serif font-bold text-2xl text-forest-900">Tuesday, Oct 13</h3>
                     <p id="focus-context-display" class="text-sm text-sage-400 italic">Viewing today</p>
                 </div>
 
                 <!-- Daily Habit Summary -->
-                <div class="bg-cream-50 rounded-2xl p-4 mb-6 border border-cream-200">
+                <div class="bg-cream-50 rounded-2xl p-4 mb-6 border border-cream-200 relative z-10">
                     <div class="flex justify-between items-end mb-2">
                         <span class="text-sm font-medium text-forest-800">Routine Progress</span>
                         <span id="daily-habit-score" class="text-lg font-serif font-bold text-sage-500">0/0</span>
@@ -134,24 +140,26 @@
                 </div>
 
                 <!-- To-Do List -->
-                <div class="flex-1 flex flex-col overflow-hidden">
+                <div class="flex-1 flex flex-col overflow-hidden relative z-10">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-bold tracking-widest text-sage-500 uppercase">Tasks for date</span>
+                        <span class="text-sm font-bold tracking-widest text-sage-500 uppercase">Specific Tasks</span>
                     </div>
                     
                     <div class="flex gap-2 mb-4">
-                        <input type="text" id="new-task-input" placeholder="Add a specific task..." class="flex-1 bg-cream-50 border border-cream-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-sage-400">
-                        <button id="btn-add-task" class="bg-sage-400 text-white p-2 rounded-xl hover:bg-sage-500 transition-colors shadow-sm">
+                        <input type="text" id="new-task-input" placeholder="Add a specific task..." class="flex-1 bg-white border border-cream-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-sage-400 shadow-sm">
+                        <button id="btn-add-task" class="bg-sage-400 text-white p-2 w-10 h-10 flex items-center justify-center rounded-xl hover:bg-sage-500 transition-colors shadow-sm">
                             <i data-lucide="plus" class="w-5 h-5"></i>
                         </button>
                     </div>
 
                     <div id="task-list" class="flex-1 overflow-y-auto space-y-2 grid-scroll pr-1">
-                        <div class="text-center py-6 text-sage-400 text-sm">Loading tasks...</div>
+                        <!-- Tasks load here -->
                     </div>
                 </div>
+                
+                <!-- Subtle graphic for right panel -->
+                <i data-lucide="compass" class="absolute -right-6 -bottom-6 text-cream-200 opacity-50 w-40 h-40 pointer-events-none"></i>
             </div>
-
         </div>
     </div>
 
@@ -160,7 +168,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, serverTimestamp, query, where, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-        // Your Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCc4iYPor1fneRElo_K5wbG1GN7zA0EjLU",
             authDomain: "habittracker-e1266.firebaseapp.com",
@@ -176,13 +183,20 @@
         
         lucide.createIcons();
 
+        // --- DYNAMIC GREETING ---
+        const hour = new Date().getHours();
+        const greetingEl = document.getElementById('greeting-display');
+        if (hour < 12) greetingEl.innerText = "Good Morning";
+        else if (hour < 18) greetingEl.innerText = "Good Afternoon";
+        else greetingEl.innerText = "Good Evening";
+
         // --- STATE MANAGEMENT ---
         let habits = [];
         let tasks = [];
         let unsubscribeTasks = null;
         
-        let viewDate = new Date(); // Controls the month shown in the grid
-        let selectedDate = new Date(); // Controls the right side panel
+        let viewDate = new Date(); 
+        let selectedDate = new Date(); 
         const todayStr = getLocalYMD(new Date());
 
         function getLocalYMD(dateObj) {
@@ -203,11 +217,8 @@
         onSnapshot(collection(db, 'habits'), (snapshot) => {
             habits = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             
-            // Auto-migrate old habits to the new dynamic month system
             habits.forEach(h => {
-                if(!h.targetMonths) {
-                    updateDoc(doc(db, 'habits', h.id), { targetMonths: [currentMonthId] });
-                }
+                if(!h.targetMonths) updateDoc(doc(db, 'habits', h.id), { targetMonths: [currentMonthId] });
             });
 
             document.getElementById('loading-state').classList.add('hide');
@@ -233,15 +244,12 @@
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             currentMonthId = getMonthId(viewDate);
             
-            // Month Header
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('month-display').innerText = `${monthNames[month]} ${year}`;
 
-            // Filter habits active this month
             const monthHabits = habits.filter(h => h.targetMonths && h.targetMonths.includes(currentMonthId));
-            
-            // Handle Empty State
             const emptyState = document.getElementById('empty-month-state');
+            
             if(monthHabits.length === 0) {
                 emptyState.classList.remove('hide');
                 document.getElementById('grid-header').innerHTML = '';
@@ -253,18 +261,17 @@
 
             monthHabits.sort((a, b) => a.name.localeCompare(b.name));
 
-            // Build Header
             const header = document.getElementById('grid-header');
-            let headerHTML = `<tr><th class="sticky-col-header p-4 text-left min-w-[200px] shadow-sm">Routines</th>`;
+            let headerHTML = `<tr><th class="sticky-col-header p-4 text-left min-w-[220px] shadow-sm z-30">Routines</th>`;
             for(let d = 1; d <= daysInMonth; d++) {
                 const colDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const isSelected = colDateStr === selectedDateStr;
                 const isToday = colDateStr === todayStr;
                 
                 headerHTML += `
-                    <th class="p-0 min-w-[40px] cursor-pointer group" onclick="selectDate('${colDateStr}')">
+                    <th class="p-0 min-w-[44px] cursor-pointer group" onclick="selectDate('${colDateStr}')">
                         <div class="py-3 flex flex-col items-center justify-center transition-colors 
-                            ${isSelected ? 'bg-sage-400 text-white' : 'hover:bg-cream-100'} 
+                            ${isSelected ? 'bg-sage-400 text-white shadow-inner' : 'hover:bg-cream-100'} 
                             ${isToday && !isSelected ? 'text-forest-900 border-b-2 border-forest-900' : ''}">
                             <span class="text-xs ${isSelected ? 'opacity-90' : 'opacity-0 group-hover:opacity-100'} transition-opacity">Select</span>
                             <span class="text-sm">${d}</span>
@@ -274,25 +281,27 @@
             headerHTML += `<th class="p-4 min-w-[80px]">Total</th></tr>`;
             header.innerHTML = headerHTML;
 
-            // Build Body
             const body = document.getElementById('grid-body');
             let bodyHTML = '';
             
             monthHabits.forEach(habit => {
                 let monthlyCompletions = 0;
-                
                 bodyHTML += `<tr class="hover:bg-cream-50 transition-colors group">`;
                 
-                // Sticky Name Column
+                // sticky col with Edit & Delete options
                 bodyHTML += `
-                    <td class="sticky-col p-4 text-left flex justify-between items-center bg-white group-hover:bg-cream-50 transition-colors">
-                        <span class="font-medium text-forest-800 text-xs md:text-sm truncate w-32 md:w-40" title="${habit.name}">${habit.name}</span>
-                        <button class="remove-habit-btn opacity-0 group-hover:opacity-100 text-sage-300 hover:text-red-400 transition-all p-1" data-id="${habit.id}" title="Remove from this month">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </button>
+                    <td class="sticky-col p-3 text-left flex justify-between items-center bg-white group-hover:bg-cream-50 transition-colors z-20">
+                        <span class="font-medium text-forest-800 text-sm truncate w-32 md:w-36" title="${habit.name}">${habit.name}</span>
+                        <div class="opacity-0 group-hover:opacity-100 flex gap-1 transition-all bg-white group-hover:bg-cream-50 rounded pl-2">
+                            <button class="edit-habit-btn text-sage-300 hover:text-sage-500 p-1.5 transition-colors" data-id="${habit.id}" data-name="${habit.name}" title="Rename Routine">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button class="remove-habit-btn text-sage-300 hover:text-red-400 p-1.5 transition-colors" data-id="${habit.id}" title="Remove from this month">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
                     </td>`;
 
-                // Days Columns
                 for(let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const isDone = habit.completedDates && habit.completedDates.includes(dateStr);
@@ -301,16 +310,15 @@
                     if(isDone) monthlyCompletions++;
 
                     bodyHTML += `
-                        <td class="p-1 border-x border-transparent ${isSelected ? 'col-active' : ''}">
-                            <button class="grid-cell w-6 h-6 rounded border flex items-center justify-center mx-auto transition-colors
-                                ${isDone ? 'bg-sage-400 border-sage-400 shadow-sm' : 'border-cream-200 hover:border-sage-300 bg-white'}" 
+                        <td class="p-1.5 border-x border-transparent ${isSelected ? 'col-active' : ''}">
+                            <button class="grid-cell w-6 h-6 rounded border flex items-center justify-center mx-auto transition-all duration-200
+                                ${isDone ? 'bg-sage-400 border-sage-400 shadow-sm scale-105' : 'border-cream-200 hover:border-sage-300 bg-white'}" 
                                 data-id="${habit.id}" data-date="${dateStr}" data-done="${isDone}">
                                 ${isDone ? '<i data-lucide="check" class="w-3 h-3 text-white"></i>' : ''}
                             </button>
                         </td>`;
                 }
 
-                // Total Column
                 let percentage = Math.round((monthlyCompletions / daysInMonth) * 100);
                 bodyHTML += `
                     <td class="p-2 font-bold ${percentage === 100 ? 'text-sage-500' : 'text-forest-800'}">
@@ -329,20 +337,15 @@
             const parts = dateStr.split('-');
             selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
             
-            // If they click a date outside the current view month, switch the grid view month
             if(getMonthId(selectedDate) !== currentMonthId) {
                 viewDate = new Date(selectedDate);
-                renderGrid();
-            } else {
-                renderGrid(); // Re-render to highlight the active column
             }
-            
+            renderGrid();
             updateDailyFocusPanel();
             loadTasksForSelectedDate();
         };
 
         function updateDailyFocusPanel() {
-            // Update Headers
             const options = { weekday: 'long', month: 'short', day: 'numeric' };
             document.getElementById('focus-date-display').innerText = selectedDate.toLocaleDateString('en-US', options);
             
@@ -351,7 +354,6 @@
             else if (selectedDateStr < todayStr) contextDisplay.innerText = "Viewing History";
             else contextDisplay.innerText = "Planning Ahead";
 
-            // Update Habit Progress for selected date
             const monthHabits = habits.filter(h => h.targetMonths && h.targetMonths.includes(getMonthId(selectedDate)));
             let completed = 0;
             let missedHtml = '';
@@ -376,7 +378,7 @@
             } else if (completed === total) {
                 missedContainer.innerHTML = '<span class="text-sage-500 font-medium">All routines completed!</span>';
             } else {
-                missedContainer.innerHTML = '<p class="font-medium text-forest-800 mb-1">Remaining/Missed:</p>' + missedHtml;
+                missedContainer.innerHTML = '<p class="font-medium text-forest-800 mb-1">Remaining / Missed:</p>' + missedHtml;
             }
             lucide.createIcons();
         }
@@ -386,11 +388,15 @@
             list.innerHTML = '';
             
             if(tasks.length === 0) {
-                list.innerHTML = '<div class="text-center py-6 text-sage-400 text-sm border-2 border-dashed border-cream-200 rounded-2xl">No specific tasks for this date.</div>';
+                list.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-center py-10 text-sage-400 border-2 border-dashed border-cream-200 rounded-2xl">
+                        <i data-lucide="list-todo" class="w-8 h-8 mb-2 opacity-50"></i>
+                        <span class="text-sm">No specific tasks for this date.</span>
+                    </div>`;
+                lucide.createIcons();
                 return;
             }
 
-            // Sort incomplete first
             tasks.sort((a, b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1);
 
             tasks.forEach(task => {
@@ -412,7 +418,6 @@
             });
             lucide.createIcons();
 
-            // Task Listeners
             document.querySelectorAll('.task-toggle').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -432,6 +437,7 @@
 
         // --- EVENT LISTENERS ---
         function attachGridListeners() {
+            // Check off habit
             document.querySelectorAll('.grid-cell').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -451,10 +457,26 @@
                     await updateDoc(habitRef, { completedDates: dates });
                 });
             });
+            
+            // EDIT Habit Name
+            document.querySelectorAll('.edit-habit-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    const currentName = e.currentTarget.getAttribute('data-name');
+                    const newName = prompt("Rename your routine:", currentName);
+                    
+                    if (newName && newName.trim() !== "" && newName !== currentName) {
+                        await updateDoc(doc(db, 'habits', id), { 
+                            name: newName.trim() 
+                        });
+                    }
+                });
+            });
 
+            // Remove Habit
             document.querySelectorAll('.remove-habit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    if(confirm("Remove this routine from the current month?")) {
+                    if(confirm("Remove this routine from the current month? Your historical data will still be saved.")) {
                         const id = e.currentTarget.getAttribute('data-id');
                         await updateDoc(doc(db, 'habits', id), {
                             targetMonths: arrayRemove(currentMonthId)
@@ -464,7 +486,6 @@
             });
         }
 
-        // Add Habit
         document.getElementById('btn-add-habit').addEventListener('click', async () => {
             const input = document.getElementById('new-habit-input');
             const name = input.value.trim();
@@ -479,7 +500,6 @@
             }
         });
 
-        // Add Task
         document.getElementById('btn-add-task').addEventListener('click', async () => {
             const input = document.getElementById('new-task-input');
             const text = input.value.trim();
@@ -494,15 +514,12 @@
             }
         });
 
-        // Enter key for inputs
         document.getElementById('new-habit-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-add-habit').click(); });
         document.getElementById('new-task-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('btn-add-task').click(); });
 
-        // Month Navigation
         document.getElementById('prev-month').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() - 1); renderGrid(); });
         document.getElementById('next-month').addEventListener('click', () => { viewDate.setMonth(viewDate.getMonth() + 1); renderGrid(); });
 
-        // Copy Previous Month Habits
         document.getElementById('btn-copy-prev-month').addEventListener('click', async () => {
             const prevMonthDate = new Date(viewDate);
             prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
@@ -514,7 +531,6 @@
                 return;
             }
             
-            // Add currentMonthId to all those habits
             for(let h of prevHabits) {
                 await updateDoc(doc(db, 'habits', h.id), {
                     targetMonths: arrayUnion(currentMonthId)
@@ -526,7 +542,6 @@
             confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#B9C5B4', '#A2B29A', '#2C3B29'] });
         }
 
-        // Init Tasks for Today
         loadTasksForSelectedDate();
 
     </script>
