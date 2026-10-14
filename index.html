@@ -169,7 +169,7 @@
     <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, serverTimestamp, query, where, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, doc, deleteDoc, serverTimestamp, query, where, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCc4iYPor1fneRElo_K5wbG1GN7zA0EjLU",
@@ -215,6 +215,23 @@
 
         let currentMonthId = getMonthId(viewDate);
         let selectedDateStr = getLocalYMD(selectedDate);
+
+        // --- TASK ROLLOVER LOGIC ---
+        // Automatically moves any incomplete task from a past date to today
+        async function rolloverPastIncompleteTasks() {
+            try {
+                const q = query(collection(db, 'tasks'), where("completed", "==", false));
+                const snapshot = await getDocs(q);
+                snapshot.forEach(async (taskDoc) => {
+                    const taskData = taskDoc.data();
+                    if (taskData.date < todayStr) {
+                        await updateDoc(doc(db, 'tasks', taskDoc.id), { date: todayStr });
+                    }
+                });
+            } catch (error) {
+                console.error("Error rolling over tasks:", error);
+            }
+        }
 
         // --- DATA FETCHING (HABITS) ---
         onSnapshot(collection(db, 'habits'), (snapshot) => {
@@ -266,7 +283,6 @@
 
             const header = document.getElementById('grid-header');
             
-            // Adjusted min-width for the habit name column header
             let headerHTML = `<tr><th class="sticky-col-header p-4 text-left min-w-[200px] shadow-sm z-30">Routines</th>`;
             for(let d = 1; d <= daysInMonth; d++) {
                 const colDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -293,7 +309,6 @@
                 let monthlyCompletions = 0;
                 bodyHTML += `<tr class="hover:bg-cream-50 transition-colors group">`;
                 
-                // Adjusted text wrapping classes so long names display fully
                 bodyHTML += `
                     <td class="sticky-col p-3 text-left flex justify-between items-center bg-white group-hover:bg-cream-50 transition-colors z-20">
                         <span class="font-medium text-forest-800 text-sm min-w-[140px] max-w-[200px] whitespace-normal break-words leading-tight pr-2">
@@ -326,7 +341,6 @@
                         </td>`;
                 }
 
-                // Dynamic SVG Progress Ring Logic
                 let percentage = Math.round((monthlyCompletions / daysInMonth) * 100);
                 const radius = 16;
                 const circumference = 2 * Math.PI * radius;
@@ -341,7 +355,7 @@
                                     class="${percentage === 100 ? 'text-sage-500' : 'text-sage-400'}" 
                                     stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round" />
                             </svg>
-                            <span class="absolute text-[10px] font-bold ${percentage === 100 ? 'text-sage-500' : 'text-forest-800'}">${percentage}%</span>
+                             <span class="absolute text-[10px] font-bold ${percentage === 100 ? 'text-sage-500' : 'text-forest-800'}">${percentage}%</span>
                         </div>
                     </td></tr>`;
             });
@@ -351,7 +365,7 @@
             attachGridListeners();
         }
 
-          // --- RENDER RIGHT PANEL (DAILY FOCUS) ---
+        // --- RENDER RIGHT PANEL (DAILY FOCUS) ---
         window.selectDate = function(dateStr) {
             selectedDateStr = dateStr;
             const parts = dateStr.split('-');
@@ -447,6 +461,7 @@
                 });
             });
 
+            // The delete functionality is handled perfectly here
             document.querySelectorAll('.task-delete').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -457,7 +472,6 @@
 
         // --- EVENT LISTENERS ---
         function attachGridListeners() {
-            // Check off habit
             document.querySelectorAll('.grid-cell').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -478,7 +492,6 @@
                 });
             });
             
-            // EDIT Habit Name
             document.querySelectorAll('.edit-habit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
@@ -493,7 +506,6 @@
                 });
             });
 
-            // Remove Habit
             document.querySelectorAll('.remove-habit-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     if(confirm("Remove this routine from the current month? Your historical data will still be saved.")) {
@@ -562,7 +574,10 @@
             confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#B9C5B4', '#A2B29A', '#2C3B29'] });
         }
 
-        loadTasksForSelectedDate();
+        // Initialize App
+        rolloverPastIncompleteTasks().then(() => {
+            loadTasksForSelectedDate();
+        });
 
     </script>
 </body>
